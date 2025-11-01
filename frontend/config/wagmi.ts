@@ -1,0 +1,13 @@
+import { getDefaultConfig } from "@rainbow-me/rainbowkit";
+import { sepolia, hardhat } from "wagmi/chains";
+
+export const config = getDefaultConfig({
+  appName: "Encrypted Debt Register",
+  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "YOUR_PROJECT_ID",
+  chains: [sepolia, hardhat],
+  ssr: false,
+  walletConnectOptions: {
+    projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "YOUR_PROJECT_ID",
+  },
+});
+
