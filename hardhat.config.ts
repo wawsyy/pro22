@@ -39,6 +39,7 @@ const config: HardhatUserConfig = {
         mnemonic: MNEMONIC,
       },
       chainId: 31337,
+      fhevm: true,
     },
     anvil: {
       accounts: {
@@ -48,6 +49,16 @@ const config: HardhatUserConfig = {
       },
       chainId: 31337,
       url: "http://localhost:8545",
+      fhevm: true,
+    },
+    localhost: {
+      accounts: {
+        mnemonic: MNEMONIC,
+      },
+      chainId: 31337,
+      url: "http://localhost:8545",
+      fhevm: true,
+    },
     },
     sepolia: {
       accounts: PRIVATE_KEY && PRIVATE_KEY.trim() !== ""
