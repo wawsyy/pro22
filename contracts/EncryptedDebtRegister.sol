@@ -180,5 +180,45 @@ contract EncryptedDebtRegister is SepoliaConfig {
             emit DebtUpdated(ids[i], statuses[i]);
         }
     }
+
+    /// @notice Validate debt record exists and belongs to caller
+    /// @param id Debt record id
+    /// @return bool True if valid
+    function validateDebtOwnership(uint256 id) external view returns (bool) {
+        DebtRecord storage record = debts[id];
+        return record.exists && record.submitter == msg.sender;
+    }
+
+    /// @notice Get debt records summary for a user
+    /// @param user User address
+    /// @return totalDebts Total number of debts
+    /// @return activeDebts Number of active debts
+    /// @return totalTypes Number of different debt types used
+    function getUserDebtSummary(address user) external view returns (
+        uint256 totalDebts,
+        uint256 activeDebts,
+        uint256 totalTypes
+    ) {
+        uint256[] memory userDebtIds = userDebts[user];
+        totalDebts = userDebtIds.length;
+
+        uint8[4] memory typeTracker; // Track which types are used
+
+        for (uint256 i = 0; i < totalDebts; i++) {
+            DebtRecord storage record = debts[userDebtIds[i]];
+            if (record.isActive) {
+                activeDebts++;
+            }
+            if (record.debtType < 4) {
+                typeTracker[record.debtType] = 1;
+            }
+        }
+
+        for (uint256 i = 0; i < 4; i++) {
+            if (typeTracker[i] == 1) {
+                totalTypes++;
+            }
+        }
+    }
 }
 
