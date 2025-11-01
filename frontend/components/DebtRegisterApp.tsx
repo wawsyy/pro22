@@ -13,6 +13,7 @@ export function DebtRegisterApp() {
     { id: "submit" as const, label: "Submit Debt", icon: "➕" },
     { id: "view" as const, label: "My Debts", icon: "📋" },
     { id: "stats" as const, label: "Statistics", icon: "📊" },
+    { id: "settings" as const, label: "Settings", icon: "⚙️" },
   ];
 
   return (
@@ -142,6 +143,34 @@ export function DebtRegisterApp() {
           {activeTab === "submit" && <DebtSubmit />}
           {activeTab === "view" && <DebtList />}
           {activeTab === "stats" && <DebtStatistics />}
+          {activeTab === "settings" && (
+            <div style={{ textAlign: "center", padding: "40px" }}>
+              <h2 style={{ marginBottom: "20px", color: "#374151" }}>Application Settings</h2>
+              <p style={{ color: "#6b7280", marginBottom: "30px" }}>
+                Configure your privacy and notification preferences for the Encrypted Debt Register.
+              </p>
+              <div style={{ maxWidth: "400px", margin: "0 auto", textAlign: "left" }}>
+                <div style={{ marginBottom: "20px" }}>
+                  <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
+                    <input type="checkbox" defaultChecked />
+                    <span>Enable email notifications</span>
+                  </label>
+                </div>
+                <div style={{ marginBottom: "20px" }}>
+                  <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
+                    <input type="checkbox" defaultChecked />
+                    <span>Auto-refresh debt list</span>
+                  </label>
+                </div>
+                <div style={{ marginBottom: "20px" }}>
+                  <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
+                    <input type="checkbox" />
+                    <span>Show advanced statistics</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          )}
         </main>
 
         {/* Footer */}
