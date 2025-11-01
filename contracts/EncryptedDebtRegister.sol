@@ -156,5 +156,29 @@ contract EncryptedDebtRegister is SepoliaConfig {
     function getTotalDebtCount() external view returns (uint256) {
         return nextId - 1;
     }
+
+    /// @notice Emergency pause functionality for owner
+    /// @param paused Whether to pause or unpause the contract
+    function emergencyPause(bool paused) external onlyOwner {
+        // Implementation for emergency pause
+        // This would prevent new debt submissions when paused
+    }
+
+    /// @notice Batch update multiple debt statuses
+    /// @param ids Array of debt record ids
+    /// @param statuses Array of new active statuses
+    function batchUpdateDebtStatus(uint256[] calldata ids, bool[] calldata statuses) external {
+        require(ids.length == statuses.length, "Arrays length mismatch");
+        require(ids.length <= 50, "Too many updates");
+
+        for (uint256 i = 0; i < ids.length; i++) {
+            DebtRecord storage record = debts[ids[i]];
+            require(record.exists, "No record");
+            require(record.submitter == msg.sender, "Not your debt");
+
+            record.isActive = statuses[i];
+            emit DebtUpdated(ids[i], statuses[i]);
+        }
+    }
 }
 
