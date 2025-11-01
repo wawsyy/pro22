@@ -9,6 +9,10 @@ This system allows users to:
 - View encrypted debt records
 - Decrypt and view their own debt status locally
 - Track debt statistics by type (publicly, without revealing individual amounts)
+- Add descriptions and priority levels to debt records
+- Batch update multiple debt statuses
+- Access emergency pause functionality for security
+- View comprehensive user debt summaries
 
 ## Quick Start
 
