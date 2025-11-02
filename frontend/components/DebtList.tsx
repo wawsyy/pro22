@@ -37,6 +37,8 @@ export function DebtList() {
   const [debts, setDebts] = useState<DebtRecord[]>([]);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
+  const [filterType, setFilterType] = useState<number | "all">("all");
+  const [filterStatus, setFilterStatus] = useState<"all" | "active" | "inactive">("all");
 
   const loadDebts = async () => {
     if (!address || !CONTRACT_ADDRESS) {
@@ -233,6 +235,67 @@ export function DebtList() {
         </div>
       )}
 
+      {/* Filters */}
+      {debts.length > 0 && (
+        <div
+          style={{
+            marginBottom: "24px",
+            padding: "20px",
+            background: "white",
+            borderRadius: "12px",
+            border: "1px solid #e5e7eb",
+            display: "flex",
+            gap: "16px",
+            flexWrap: "wrap",
+          }}
+        >
+          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+            <label style={{ fontSize: "14px", fontWeight: "600", color: "#374151" }}>
+              Filter by Type
+            </label>
+            <select
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value === "all" ? "all" : parseInt(e.target.value))}
+              style={{
+                padding: "8px 12px",
+                border: "1px solid #d1d5db",
+                borderRadius: "6px",
+                fontSize: "14px",
+                background: "white",
+              }}
+            >
+              <option value="all">All Types</option>
+              {Object.entries(DEBT_TYPE_LABELS).map(([value, { label }]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+            <label style={{ fontSize: "14px", fontWeight: "600", color: "#374151" }}>
+              Filter by Status
+            </label>
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value as "all" | "active" | "inactive")}
+              style={{
+                padding: "8px 12px",
+                border: "1px solid #d1d5db",
+                borderRadius: "6px",
+                fontSize: "14px",
+                background: "white",
+              }}
+            >
+              <option value="all">All Status</option>
+              <option value="active">Active Only</option>
+              <option value="inactive">Inactive Only</option>
+            </select>
+          </div>
+        </div>
+      )}
+
       {debts.length === 0 ? (
         <div
           style={{
@@ -248,7 +311,14 @@ export function DebtList() {
         </div>
       ) : (
         <div style={{ display: "grid", gap: "16px" }}>
-          {debts.map((debt) => {
+          {debts
+            .filter((debt) => {
+              if (filterType !== "all" && debt.debtType !== filterType) return false;
+              if (filterStatus === "active" && !debt.isActive) return false;
+              if (filterStatus === "inactive" && debt.isActive) return false;
+              return true;
+            })
+            .map((debt) => {
             const typeInfo = DEBT_TYPE_LABELS[debt.debtType] || {
               label: "Unknown",
               icon: "❓",
