@@ -209,5 +209,93 @@ describe("EncryptedDebtRegister", function () {
     expect(loanCount).to.eq(1);
     expect(creditCardCount).to.eq(1);
   });
+
+  it("should validate debt ownership", async function () {
+    const debtAmount = 3000;
+    const debtType = 2; // Borrowing
+
+    const encryptedAmount = await fhevm.createEncryptedInput(debtRegisterContractAddress, signers.alice.address);
+    const encryptedOwner = await fhevm.createEncryptedInput(debtRegisterContractAddress, signers.alice.address);
+
+    await debtRegisterContract.connect(signers.alice).submitDebt(
+      encryptedOwner.handles[0],
+      encryptedAmount.handles[0],
+      encryptedAmount.inputProof,
+      debtType
+    );
+
+    const debtId = await debtRegisterContract.getUserDebtIdAt(signers.alice.address, 0);
+    const isValid = await debtRegisterContract.validateDebtOwnership(debtId);
+    expect(isValid).to.be.true;
+
+    // Test with wrong owner
+    const isValidForBob = await debtRegisterContract.connect(signers.bob).validateDebtOwnership(debtId);
+    expect(isValidForBob).to.be.false;
+  });
+
+  it("should provide user debt summary", async function () {
+    // Alice submits two loans
+    const encryptedAmount1 = await fhevm.createEncryptedInput(debtRegisterContractAddress, signers.alice.address);
+    const encryptedOwner1 = await fhevm.createEncryptedInput(debtRegisterContractAddress, signers.alice.address);
+
+    await debtRegisterContract.connect(signers.alice).submitDebt(
+      encryptedOwner1.handles[0],
+      encryptedAmount1.handles[0],
+      encryptedAmount1.inputProof,
+      0 // Loan
+    );
+
+    const encryptedAmount2 = await fhevm.createEncryptedInput(debtRegisterContractAddress, signers.alice.address);
+    const encryptedOwner2 = await fhevm.createEncryptedInput(debtRegisterContractAddress, signers.alice.address);
+
+    await debtRegisterContract.connect(signers.alice).submitDebt(
+      encryptedOwner2.handles[0],
+      encryptedAmount2.handles[0],
+      encryptedAmount2.inputProof,
+      1 // Credit Card
+    );
+
+    const [totalDebts, activeDebts, totalTypes] = await debtRegisterContract.getUserDebtSummary(signers.alice.address);
+    expect(totalDebts).to.eq(2);
+    expect(activeDebts).to.eq(2);
+    expect(totalTypes).to.eq(2);
+  });
+
+  it("should batch update debt statuses", async function () {
+    // Alice submits two debts
+    const encryptedAmount1 = await fhevm.createEncryptedInput(debtRegisterContractAddress, signers.alice.address);
+    const encryptedOwner1 = await fhevm.createEncryptedInput(debtRegisterContractAddress, signers.alice.address);
+
+    await debtRegisterContract.connect(signers.alice).submitDebt(
+      encryptedOwner1.handles[0],
+      encryptedAmount1.handles[0],
+      encryptedAmount1.inputProof,
+      0
+    );
+
+    const encryptedAmount2 = await fhevm.createEncryptedInput(debtRegisterContractAddress, signers.alice.address);
+    const encryptedOwner2 = await fhevm.createEncryptedInput(debtRegisterContractAddress, signers.alice.address);
+
+    await debtRegisterContract.connect(signers.alice).submitDebt(
+      encryptedOwner2.handles[0],
+      encryptedAmount2.handles[0],
+      encryptedAmount2.inputProof,
+      1
+    );
+
+    const debtId1 = await debtRegisterContract.getUserDebtIdAt(signers.alice.address, 0);
+    const debtId2 = await debtRegisterContract.getUserDebtIdAt(signers.alice.address, 1);
+
+    const ids = [debtId1, debtId2];
+    const statuses = [false, false]; // Mark both as inactive
+
+    await debtRegisterContract.connect(signers.alice).batchUpdateDebtStatus(ids, statuses);
+
+    const [, , , isActive1] = await debtRegisterContract.getDebtMetadata(debtId1);
+    const [, , , isActive2] = await debtRegisterContract.getDebtMetadata(debtId2);
+
+    expect(isActive1).to.be.false;
+    expect(isActive2).to.be.false;
+  });
 });
 
