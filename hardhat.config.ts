@@ -70,6 +70,8 @@ const config: HardhatUserConfig = {
           },
       chainId: 11155111,
       url: `https://sepolia.infura.io/v3/${INFURA_API_KEY}`,
+      fhevm: true,
+      timeout: 60000, // 60 seconds timeout for FHE operations
     },
   },
   paths: {
