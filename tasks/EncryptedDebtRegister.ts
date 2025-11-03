@@ -187,3 +187,71 @@ task("task:decrypt-debt", "Decrypts a debt record")
     console.log(`Clear amount: ${clearAmount}`);
   });
 
+/**
+ * Example:
+ *   - npx hardhat --network localhost task:batch-update-status --ids "1,2,3" --statuses "false,true,false"
+ */
+task("task:batch-update-status", "Batch update debt statuses")
+  .addParam("ids", "Comma-separated debt IDs")
+  .addParam("statuses", "Comma-separated status values (true/false)")
+  .setAction(async function (taskArguments: TaskArguments, hre) {
+    const { ethers, fhevm, deployments } = hre;
+
+    const DebtRegisterDeployment = await deployments.get("EncryptedDebtRegister");
+    const DebtRegister = await ethers.getContractAt("EncryptedDebtRegister", DebtRegisterDeployment.address);
+
+    const signers = await ethers.getSigners();
+
+    const ids = taskArguments.ids.split(",").map((id: string) => parseInt(id.trim()));
+    const statuses = taskArguments.statuses.split(",").map((status: string) => status.trim().toLowerCase() === "true");
+
+    if (ids.length !== statuses.length) {
+      throw new Error("IDs and statuses arrays must have the same length");
+    }
+
+    console.log(`Batch updating ${ids.length} debt records...`);
+
+    const tx = await DebtRegister.connect(signers[0]).batchUpdateDebtStatus(ids, statuses);
+    await tx.wait();
+
+    console.log("Batch update completed successfully!");
+  });
+
+/**
+ * Example:
+ *   - npx hardhat --network localhost task:get-user-summary --user "0x123..."
+ */
+task("task:get-user-summary", "Get user debt summary")
+  .addParam("user", "User address")
+  .setAction(async function (taskArguments: TaskArguments, hre) {
+    const { ethers, deployments } = hre;
+
+    const DebtRegisterDeployment = await deployments.get("EncryptedDebtRegister");
+    const DebtRegister = await ethers.getContractAt("EncryptedDebtRegister", DebtRegisterDeployment.address);
+
+    const [totalDebts, activeDebts, totalTypes] = await DebtRegister.getUserDebtSummary(taskArguments.user);
+
+    console.log(`User ${taskArguments.user} summary:`);
+    console.log(`- Total debts: ${totalDebts}`);
+    console.log(`- Active debts: ${activeDebts}`);
+    console.log(`- Debt types used: ${totalTypes}`);
+  });
+
+/**
+ * Example:
+ *   - npx hardhat --network localhost task:validate-ownership --id 1
+ */
+task("task:validate-ownership", "Validate debt ownership")
+  .addParam("id", "Debt record ID")
+  .setAction(async function (taskArguments: TaskArguments, hre) {
+    const { ethers, deployments } = hre;
+
+    const DebtRegisterDeployment = await deployments.get("EncryptedDebtRegister");
+    const DebtRegister = await ethers.getContractAt("EncryptedDebtRegister", DebtRegisterDeployment.address);
+
+    const signers = await ethers.getSigners();
+    const isValid = await DebtRegister.connect(signers[0]).validateDebtOwnership(taskArguments.id);
+
+    console.log(`Debt ${taskArguments.id} ownership validation: ${isValid ? "VALID" : "INVALID"}`);
+  });
+
