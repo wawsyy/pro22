@@ -104,6 +104,25 @@ encrypted-debt-register/
 - `2`: Borrowing
 - `3`: Other
 
+## 🔒 Security Considerations
+
+### Privacy & Encryption
+- **Fully Homomorphic Encryption (FHE)**: All debt amounts and owner addresses are encrypted on-chain
+- **Local Decryption**: Only users with the correct private key can decrypt their own data
+- **Zero-Knowledge Proofs**: Transaction inputs are validated without revealing sensitive information
+
+### Smart Contract Security
+- **Access Control**: Only contract owners can perform emergency operations
+- **Input Validation**: All user inputs are validated before processing
+- **Gas Optimization**: Efficient batch operations to reduce transaction costs
+- **Emergency Pause**: Owner can pause contract functionality in case of issues
+
+### Frontend Security
+- **Wallet Integration**: Secure connection to user's Web3 wallet
+- **Input Sanitization**: All user inputs are sanitized and validated
+- **Error Handling**: Comprehensive error handling and user feedback
+- **Network Validation**: Contract interactions validated against expected networks
+
 ## 📚 Documentation
 
 - [FHEVM Documentation](https://docs.zama.ai/fhevm)
