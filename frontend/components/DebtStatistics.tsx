@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useWalletClient } from "wagmi";
 import { BrowserProvider, Contract } from "ethers";
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from "../config/contracts";
 
@@ -13,7 +12,6 @@ const DEBT_TYPE_LABELS: Record<number, { label: string; icon: string; color: str
 };
 
 export function DebtStatistics() {
-  const { data: walletClient } = useWalletClient();
   const [stats, setStats] = useState<Record<number, bigint>>({});
   const [totalCount, setTotalCount] = useState<bigint>(0n);
   const [loading, setLoading] = useState(false);
