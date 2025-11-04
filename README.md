@@ -134,6 +134,48 @@ encrypted-debt-register/
 
 This project is licensed under the BSD-3-Clause-Clear License. See the [LICENSE](LICENSE) file for details.
 
+## 🤝 Contributing
+
+We welcome contributions to the Encrypted Debt Register project! Here's how you can help:
+
+### Development Setup
+
+1. **Fork and Clone** the repository
+2. **Install Dependencies**: `npm install`
+3. **Set up Environment**: Configure your environment variables
+4. **Run Tests**: `npm run test` to ensure everything works
+5. **Start Development**: `npm run dev` for frontend development
+
+### Contribution Guidelines
+
+- **Code Style**: Follow the existing ESLint and Prettier configurations
+- **Testing**: Add tests for new features and ensure all tests pass
+- **Documentation**: Update README and code comments for significant changes
+- **Commits**: Use conventional commit format (see commit history)
+- **Pull Requests**: Provide clear descriptions and link related issues
+
+### Areas for Contribution
+
+- **Smart Contract Improvements**: Gas optimizations, new features
+- **Frontend Enhancements**: UI/UX improvements, accessibility
+- **Testing**: Additional test cases, integration tests
+- **Documentation**: Tutorials, API documentation
+- **Security**: Security audits, vulnerability fixes
+
+### Commit Convention
+
+We use [Conventional Commits](https://conventionalcommits.org/):
+
+```
+feat: add new feature
+fix: bug fix
+docs: documentation changes
+style: code style changes (formatting, etc.)
+refactor: code refactoring
+test: adding or updating tests
+chore: maintenance tasks
+```
+
 ## 🆘 Support
 
 - **GitHub Issues**: [Report bugs or request features](https://github.com/zama-ai/fhevm/issues)
