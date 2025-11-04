@@ -7,7 +7,7 @@ import { DebtList } from "./DebtList";
 import { DebtStatistics } from "./DebtStatistics";
 
 export function DebtRegisterApp() {
-  const [activeTab, setActiveTab] = useState<"submit" | "view" | "stats">("submit");
+  const [activeTab, setActiveTab] = useState<"submit" | "view" | "stats" | "settings">("submit");
 
   const tabs = [
     { id: "submit" as const, label: "Submit Debt", icon: "➕" },
