@@ -26,5 +26,5 @@
     "@typescript-eslint/explicit-function-return-type": "off",
     "no-console": "warn"
   },
-  "ignorePatterns": ["dist/", "node_modules/", "artifacts/", "cache/", "types/"]
+  "ignorePatterns": ["dist/", "node_modules/", "artifacts/", "cache/", "types/", "frontend/"]
 }
