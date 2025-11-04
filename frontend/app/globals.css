@@ -45,3 +45,33 @@
   }
 }
 
+@layer components {
+  .debt-card {
+    @apply bg-white rounded-xl shadow-lg border border-gray-200 p-6 transition-all duration-200 hover:shadow-xl;
+  }
+
+  .debt-button-primary {
+    @apply bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 hover:from-purple-700 hover:to-blue-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2;
+  }
+
+  .debt-button-secondary {
+    @apply bg-white text-gray-700 font-semibold py-3 px-6 rounded-lg border border-gray-300 transition-all duration-200 hover:bg-gray-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2;
+  }
+
+  .debt-input {
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 placeholder-gray-400;
+  }
+
+  .debt-select {
+    @apply px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white;
+  }
+
+  .debt-stats-card {
+    @apply bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-6 border border-blue-100;
+  }
+
+  .debt-loading-spinner {
+    @apply animate-spin rounded-full h-6 w-6 border-2 border-purple-600 border-t-transparent;
+  }
+}
+
