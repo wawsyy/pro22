@@ -297,5 +297,83 @@ describe("EncryptedDebtRegister", function () {
     expect(isActive1).to.be.false;
     expect(isActive2).to.be.false;
   });
+
+  it("should reject batch updates exceeding maximum size", async function () {
+    const ids: number[] = [];
+    const statuses: boolean[] = [];
+
+    // Create 51 items (exceeds limit of 50)
+    for (let i = 0; i < 51; i++) {
+      ids.push(i + 1);
+      statuses.push(false);
+    }
+
+    await expect(
+      DebtRegister.connect(signers.alice).batchUpdateDebtStatus(ids, statuses)
+    ).to.be.revertedWith("Too many updates");
+  });
+
+  it("should handle invalid debt types correctly", async function () {
+    const debtAmount = 1000;
+    const invalidDebtType = 5; // Invalid type (> 3)
+
+    const encryptedAmount = await fhevm.createEncryptedInput(debtRegisterContractAddress, signers.alice.address);
+    const encryptedOwner = await fhevm.createEncryptedInput(debtRegisterContractAddress, signers.alice.address);
+
+    await expect(
+      debtRegisterContract.connect(signers.alice).submitDebt(
+        encryptedOwner.handles[0],
+        encryptedAmount.handles[0],
+        encryptedAmount.inputProof,
+        invalidDebtType
+      )
+    ).to.be.revertedWith("Invalid debt type");
+  });
+
+  it("should prevent updating non-owned debts", async function () {
+    const debtAmount = 2000;
+    const debtType = 1;
+
+    const encryptedAmount = await fhevm.createEncryptedInput(debtRegisterContractAddress, signers.alice.address);
+    const encryptedOwner = await fhevm.createEncryptedInput(debtRegisterContractAddress, signers.alice.address);
+
+    await debtRegisterContract.connect(signers.alice).submitDebt(
+      encryptedOwner.handles[0],
+      encryptedAmount.handles[0],
+      encryptedAmount.inputProof,
+      debtType
+    );
+
+    const debtId = await debtRegisterContract.getUserDebtIdAt(signers.alice.address, 0);
+
+    // Bob tries to update Alice's debt
+    await expect(
+      debtRegisterContract.connect(signers.bob).updateDebtStatus(debtId, false)
+    ).to.be.revertedWith("Not your debt");
+  });
+
+  it("should provide accurate user debt counts", async function () {
+    // Alice submits 3 debts
+    for (let i = 0; i < 3; i++) {
+      const encryptedAmount = await fhevm.createEncryptedInput(debtRegisterContractAddress, signers.alice.address);
+      const encryptedOwner = await fhevm.createEncryptedInput(debtRegisterContractAddress, signers.alice.address);
+
+      await debtRegisterContract.connect(signers.alice).submitDebt(
+        encryptedOwner.handles[0],
+        encryptedAmount.handles[0],
+        encryptedAmount.inputProof,
+        i % 4 // Cycle through debt types
+      );
+    }
+
+    const count = await debtRegisterContract.getUserDebtCount(signers.alice.address);
+    expect(count).to.eq(3);
+
+    // Verify each debt ID exists
+    for (let i = 0; i < 3; i++) {
+      const debtId = await debtRegisterContract.getUserDebtIdAt(signers.alice.address, i);
+      expect(debtId).to.be.gt(0);
+    }
+  });
 });
 
