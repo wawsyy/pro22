@@ -1,4 +1,5 @@
 {
+  "root": true,
   "env": {
     "browser": true,
     "es2021": true,
@@ -26,5 +27,5 @@
     "@typescript-eslint/explicit-function-return-type": "off",
     "no-console": "warn"
   },
-  "ignorePatterns": ["dist/", "node_modules/", "artifacts/", "cache/", "types/", "frontend/"]
+  "ignorePatterns": ["dist/", "node_modules/", "artifacts/", "cache/", "types/", "frontend/**"]
 }

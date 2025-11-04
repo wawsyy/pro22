@@ -148,7 +148,12 @@ export function DebtList() {
         durationDays
       );
 
-      const amount = result[encryptedAmount] || BigInt(0);
+      const amountValue = result[encryptedAmount];
+      const amount: bigint = typeof amountValue === 'bigint' 
+        ? amountValue 
+        : typeof amountValue === 'string' 
+          ? BigInt(amountValue) 
+          : BigInt(0);
 
       setDebts((prev) =>
         prev.map((d) =>
