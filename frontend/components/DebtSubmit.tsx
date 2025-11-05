@@ -26,8 +26,6 @@ export function DebtSubmit() {
 
   const [amount, setAmount] = useState("");
   const [debtType, setDebtType] = useState<number>(0);
-  const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
   const [status, setStatus] = useState("");
   const [mounted, setMounted] = useState(false);
 
@@ -255,87 +253,6 @@ export function DebtSubmit() {
               >
                 <span>{type.icon}</span>
                 <span>{type.label}</span>
-              </button>
-            ))}
-          </div>
-        </label>
-
-        <label style={{ display: "grid", gap: "8px" }}>
-          <div
-            style={{
-              fontSize: "14px",
-              fontWeight: "600",
-              color: "#374151",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-            }}
-          >
-            <span>📝</span>
-            Description (Optional)
-          </div>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Add a note about this debt (e.g., Bank name, purpose, repayment plan)"
-            rows={3}
-            style={{
-              width: "100%",
-              padding: "12px 16px",
-              border: "1px solid #d1d5db",
-              borderRadius: "8px",
-              background: "#f9fafb",
-              color: "#111827",
-              fontSize: "15px",
-              fontFamily: "inherit",
-              resize: "vertical",
-              transition: "all 0.2s",
-            }}
-            onFocus={(e) => {
-              e.currentTarget.style.borderColor = "#667eea";
-              e.currentTarget.style.boxShadow = "0 0 0 3px rgba(102, 126, 234, 0.1)";
-            }}
-            onBlur={(e) => {
-              e.currentTarget.style.borderColor = "#d1d5db";
-              e.currentTarget.style.boxShadow = "none";
-            }}
-          />
-        </label>
-
-        <label style={{ display: "grid", gap: "8px" }}>
-          <div
-            style={{
-              fontSize: "14px",
-              fontWeight: "600",
-              color: "#374151",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-            }}
-          >
-            <span>⚡</span>
-            Priority Level
-          </div>
-          <div style={{ display: "flex", gap: "12px" }}>
-            {["low", "medium", "high"].map((p) => (
-              <button
-                key={p}
-                type="button"
-                onClick={() => setPriority(p as "low" | "medium" | "high")}
-                style={{
-                  padding: "10px 16px",
-                  border: priority === p ? "2px solid #667eea" : "1px solid #d1d5db",
-                  borderRadius: "6px",
-                  background: priority === p ? "#eef2ff" : "white",
-                  color: "#111827",
-                  fontSize: "14px",
-                  fontWeight: priority === p ? "600" : "400",
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                  textTransform: "capitalize",
-                }}
-              >
-                {p}
               </button>
             ))}
           </div>
