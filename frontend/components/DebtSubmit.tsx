@@ -17,7 +17,7 @@ export function DebtSubmit() {
   const { address } = useAccount();
   const { data: walletClient } = useWalletClient();
   // Use window.ethereum for FHEVM (it needs EIP1193 provider)
-  const { instance, status: fhevmStatus } = useFhevm({
+  const { instance, status: fhevmStatus, error: fhevmError } = useFhevm({
     provider: typeof window !== "undefined" ? (window as any).ethereum : undefined,
     chainId: walletClient?.chain?.id,
     enabled: !!walletClient && typeof window !== "undefined",
@@ -281,12 +281,29 @@ export function DebtSubmit() {
             ? "Loading..."
             : !address
               ? "Connect Wallet"
+              : fhevmStatus === "error"
+                ? "Encryption Error - Relayer Unavailable"
               : fhevmStatus !== "ready"
                 ? "Initializing Encryption..."
                 : status.includes("Submitting") || status.includes("Transaction")
                   ? "Processing..."
                   : "Submit Debt Record"}
         </button>
+
+        {fhevmStatus === "error" && fhevmError && (
+          <div
+            style={{
+              padding: "12px 16px",
+              borderRadius: "8px",
+              background: "#fee2e2",
+              color: "#991b1b",
+              fontSize: "14px",
+              marginTop: "16px",
+            }}
+          >
+            ⚠️ Encryption System Error: {fhevmError.message || "The FHEVM relayer is currently unavailable. Please try again later or check your network connection."}
+          </div>
+        )}
 
         {status && (
           <div
